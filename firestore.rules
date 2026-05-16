@@ -1,0 +1,65 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    // Startups
+    match /startups/{startupId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() && isOwner(incoming().founderUid);
+      allow update: if isSignedIn() && isOwner(existing().founderUid) && incoming().founderUid == existing().founderUid;
+      allow delete: if false; // Admins only usually
+    }
+
+    // Mentors
+    match /mentors/{mentorId} {
+      allow read: if isSignedIn();
+      allow write: if false; // Managed by admin or backend
+    }
+
+    // Matches
+    match /matches/{matchId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn(); // Simplified for demo, usually backend
+      allow update: if isSignedIn(); 
+      allow delete: if false;
+    }
+
+    // Engagements
+    match /engagements/{engagementId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn();
+      allow update: if isSignedIn();
+    }
+
+    // Outcomes
+    match /outcomes/{outcomeId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn();
+    }
+  }
+}

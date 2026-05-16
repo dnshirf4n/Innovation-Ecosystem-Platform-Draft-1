@@ -1,0 +1,103 @@
+{
+  "entities": {
+    "Startup": {
+      "title": "Startup",
+      "description": "A startup looking for mentorship and growth.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "industry": { "type": "string" },
+        "stage": { "type": "string" },
+        "businessModel": { "type": "string" },
+        "keyNeeds": { "type": "array" },
+        "founderUid": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "industry", "stage", "founderUid"]
+    },
+    "Mentor": {
+      "title": "Mentor",
+      "description": "An expert providing guidance to startups.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "bio": { "type": "string" },
+        "expertise": { "type": "array" },
+        "industries": { "type": "array" },
+        "successScore": { "type": "number" },
+        "strengthDomains": { "type": "array" },
+        "weakDomains": { "type": "array" },
+        "totalEngagements": { "type": "number" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "expertise", "industries"]
+    },
+    "Match": {
+      "title": "Match",
+      "description": "An AI-generated pairing between a startup and a mentor.",
+      "type": "object",
+      "properties": {
+        "startupId": { "type": "string" },
+        "mentorId": { "type": "string" },
+        "score": { "type": "number" },
+        "reasoning": { "type": "string" },
+        "status": { "type": "string", "enum": ["pending", "approved", "rejected", "auto_assigned"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["startupId", "mentorId", "score", "status"]
+    },
+    "Engagement": {
+      "title": "Engagement",
+      "description": "An active mentorship relationship.",
+      "type": "object",
+      "properties": {
+        "startupId": { "type": "string" },
+        "mentorId": { "type": "string" },
+        "status": { "type": "string", "enum": ["active", "completed"] },
+        "startDate": { "type": "string", "format": "date-time" },
+        "endDate": { "type": "string", "format": "date-time" },
+        "milestones": { "type": "array" }
+      },
+      "required": ["startupId", "mentorId", "status"]
+    },
+    "Outcome": {
+      "title": "Outcome",
+      "description": "The result of a completed engagement.",
+      "type": "object",
+      "properties": {
+        "engagementId": { "type": "string" },
+        "startupId": { "type": "string" },
+        "mentorId": { "type": "string" },
+        "progressRating": { "type": "number" },
+        "feedback": { "type": "string" },
+        "fundingGrowth": { "type": "number" },
+        "userGrowth": { "type": "number" },
+        "completedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["engagementId", "progressRating"]
+    }
+  },
+  "firestore": {
+    "startups": {
+      "schema": "Startup",
+      "description": "Collection of startups."
+    },
+    "mentors": {
+      "schema": "Mentor",
+      "description": "Collection of available mentors."
+    },
+    "matches": {
+      "schema": "Match",
+      "description": "AI-generated connection matches."
+    },
+    "engagements": {
+      "schema": "Engagement",
+      "description": "Ongoing or past mentorship sessions."
+    },
+    "outcomes": {
+      "schema": "Outcome",
+      "description": "Post-engagement assessment and data."
+    }
+  }
+}
